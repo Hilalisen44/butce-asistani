@@ -1,0 +1,17 @@
+# Python'un ürettiği geçici dosyalar
+__pycache__/
+*.pyc
+
+# Sanal ortam (her bilgisayarda yeniden kurulur)
+venv/
+
+# Gizli bilgiler (şifre, API anahtarı)
+.env
+
+# Veritabanı dosyaları (kişisel veri içerir)
+*.db
+*.sqlite3
+
+# Editör ayarları
+.vscode/
+
