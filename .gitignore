@@ -1,0 +1,18 @@
+# Sanal ortam
+venv/
+.venv/
+
+# Python'un ürettiği geçici dosyalar
+__pycache__/
+*.pyc
+
+# Gizli bilgiler (şifre, API anahtarı)
+.env
+
+# Veritabanı dosyası
+*.db
+
+# Editör ve araç dosyaları
+.vscode/
+.claude/
+CLAUDE.md
