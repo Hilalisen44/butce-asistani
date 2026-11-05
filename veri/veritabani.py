@@ -4,11 +4,18 @@ Veri katmanı: Veritabanı bağlantısı ve kurulum.
 import sqlite3
 from pathlib import Path
 
+import sys
+
 # Dosya yolları
 KLASOR = Path(__file__).parent              # veri/ klasörü
-VERITABANI_YOLU = KLASOR.parent / "butce.db"  # proje ana klasöründe butce.db
 SEMA_YOLU = KLASOR / "schema.sql"
 
+if getattr(sys, "frozen", False):
+    # .exe olarak çalışıyorsa: veritabanı exe'nin yanında dursun
+    VERITABANI_YOLU = Path(sys.executable).parent / "butce.db"
+else:
+    # normal (python app.py) çalışıyorsa: proje ana klasöründe
+    VERITABANI_YOLU = KLASOR.parent / "butce.db"
 
 def baglanti_al():
     """Veritabanına bağlanır ve bağlantıyı döndürür."""

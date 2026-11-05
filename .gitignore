@@ -16,3 +16,7 @@ __pycache__/
 .vscode/
 .claude/
 CLAUDE.md
+# PyInstaller (exe) çıktıları
+build/
+dist/
+*.spec
