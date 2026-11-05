@@ -23,5 +23,24 @@ Kullanıcıların gelir ve giderlerini kaydedip kategorilere ayırabildiği, bü
 3. Etkinleştir: `.\venv\Scripts\Activate.ps1`
 4. Paketleri yükle: `pip install -r requirements.txt`
 
+## ▶️ Çalıştırma
+1. `.\venv\Scripts\Activate.ps1`
+2. `python -m veri.ornek_veri` (veritabanını örnek veriyle oluşturur)
+3. `python app.py`
+4. Tarayıcıda `127.0.0.1:5000`
+
+## 👤 Test hesapları (uydurma, KVKK'ya uygun)
+| Rol | E-posta | Parola |
+|---|---|---|
+| Kullanıcı | test@ornek.com | Test123 |
+| Yönetici | yonetici@ornek.com | Yonetici123 |
+
+## ✅ Tamamlanan modüller (v0.1-vize)
+- Hafta 3: Katmanlı mimari, ER diyagramı
+- Hafta 4: Veritabanı şeması, kısıtlar, CRUD
+- Hafta 5: Kayıt/giriş, parola hash, rol tabanlı erişim
+- Hafta 6: Gelir/gider kaydı, filtre, arama
+- Hafta 7: Bütçe hedefi ve aşım uyarısı
+
 ## 📌 Durum
-Geliştirme aşamasında (Hafta 3).
+Ara sürüm (vize): v0.1-vize
