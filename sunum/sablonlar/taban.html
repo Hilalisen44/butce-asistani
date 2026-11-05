@@ -37,6 +37,7 @@
     {% if session.get('kullanici_id') %}
       <a href="{{ url_for('panel') }}">Panel</a>
       <a href="{{ url_for('islemler') }}">İşlemler</a>
+            <a href="{{ url_for('butce') }}">Bütçe</a>
       {% if session.get('rol') == 'yonetici' %}
         <a href="{{ url_for('yonetici') }}">Yönetici</a>
       {% endif %}

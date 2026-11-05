@@ -1,0 +1,63 @@
+{% extends "taban.html" %}
+{% block baslik %}Bütçe Hedefleri{% endblock %}
+{% block icerik %}
+<h2>🎯 Bütçe Hedefleri</h2>
+
+<form method="get" class="satir-form">
+  <label>Ay <input type="month" name="ay" value="{{ ay }}"></label>
+  <button type="submit">Göster</button>
+</form>
+
+{% for d in durumlar if d.durum == 'asildi' %}
+  <div class="mesaj hata">🔴 <strong>{{ d.kategori }}</strong> bütçeni aştın!
+    {{ "%.2f"|format(d.harcanan) }} / {{ "%.2f"|format(d.limit) }} TL</div>
+{% endfor %}
+
+<h3>➕ Hedef Koy / Güncelle</h3>
+<form method="post" class="satir-form">
+  <input type="hidden" name="ay" value="{{ ay }}">
+  <label>Kategori
+    <select name="kategori_id" required>
+      <option value="">Seçin</option>
+      {% for k in kategoriler if k.tur == 'gider' %}
+        <option value="{{ k.id }}">{{ k.ad }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Aylık limit (TL) <input name="limit" type="number" step="0.01" min="0.01" required></label>
+  <button type="submit">Kaydet</button>
+</form>
+
+<table>
+  <tr><th>Kategori</th><th>Limit</th><th>Harcanan</th><th>Kalan</th><th>Durum</th><th></th></tr>
+  {% for d in durumlar %}
+  <tr>
+    <td>{{ d.kategori }}</td>
+    <td>{{ "%.2f"|format(d.limit) }}</td>
+    <td>{{ "%.2f"|format(d.harcanan) }}</td>
+    <td>{{ "%.2f"|format(d.kalan) }}</td>
+    <td>
+      <div class="cubuk"><div class="dolu {{ d.durum }}" style="width: {{ [d.yuzde, 100]|min }}%"></div></div>
+      %{{ d.yuzde }}
+      {% if d.durum == 'asildi' %}🔴 Aşıldı{% elif d.durum == 'yaklasiyor' %}🟡 Yaklaşıyor{% else %}🟢 Normal{% endif %}
+    </td>
+    <td>
+      <form method="post" action="{{ url_for('hedef_silme', hedef_id=d.id) }}"
+            onsubmit="return confirm('Hedef silinsin mi?')">
+        <button class="kucuk">Sil</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="6">Bu ay için hedef yok.</td></tr>
+  {% endfor %}
+</table>
+
+<style>
+  .cubuk { background: #eee; border-radius: 6px; height: 10px; overflow: hidden; margin-bottom: 4px; }
+  .dolu { height: 100%; }
+  .dolu.normal { background: #2e9e4f; }
+  .dolu.yaklasiyor { background: #e0a100; }
+  .dolu.asildi { background: #d64545; }
+</style>
+{% endblock %}

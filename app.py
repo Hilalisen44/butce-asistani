@@ -9,6 +9,7 @@ from is_katmani.kimlik import kayit_ol, giris_dogrula, KimlikHatasi
 from sunum.yetki import giris_gerekli, yonetici_gerekli
 
 from is_katmani.islem_kurallari import islem_kaydet, islem_kaldir, bakiye_ozeti, IslemHatasi
+from is_katmani.butce_kurallari import hedef_belirle, hedef_durumlari, kategori_uyarisi, hedef_kaldir, bu_ay, ButceHatasi
 from veri import islem_veri, kategori_veri
 from datetime import date
 app = Flask(__name__, template_folder="sunum/sablonlar")
@@ -98,6 +99,9 @@ def islemler():
                 request.form.get("aciklama"),
             )
             flash("Islem eklendi.", "basari")
+            uyari = kategori_uyarisi(kullanici_id, request.form.get("kategori_id"), request.form.get("tarih"))
+            if uyari:
+                flash(uyari, "hata")
         except IslemHatasi as hata:
             flash(str(hata), "hata")
         return redirect(url_for("islemler"))
@@ -135,5 +139,39 @@ def islem_silme(islem_id):
     except IslemHatasi as hata:
         flash(str(hata), "hata")
     return redirect(url_for("islemler"))
+# ---------------- Bütçe Hedefi (Hafta 7) ----------------
+@app.route("/butce", methods=["GET", "POST"])
+@giris_gerekli
+def butce():
+    kullanici_id = session["kullanici_id"]
+
+    if request.method == "POST":
+        ay = request.form.get("ay") or bu_ay()
+        try:
+            hedef_belirle(kullanici_id, request.form.get("kategori_id"), request.form.get("limit"), ay)
+            flash("Hedef kaydedildi.", "basari")
+        except ButceHatasi as hata:
+            flash(str(hata), "hata")
+        return redirect(url_for("butce", ay=ay))
+
+    ay = request.args.get("ay") or bu_ay()
+    return render_template(
+        "butce.html",
+        ay=ay,
+        durumlar=hedef_durumlari(kullanici_id, ay),
+        kategoriler=kategori_veri.kategorileri_listele(),
+    )
+
+
+@app.route("/butce/<int:hedef_id>/sil", methods=["POST"])
+@giris_gerekli
+def hedef_silme(hedef_id):
+    try:
+        hedef_kaldir(session["kullanici_id"], hedef_id)
+        flash("Hedef silindi.", "basari")
+    except ButceHatasi as hata:
+        flash(str(hata), "hata")
+    return redirect(url_for("butce"))
+
 if __name__ == "__main__":
     app.run(debug=True)
