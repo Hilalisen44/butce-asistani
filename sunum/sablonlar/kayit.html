@@ -1,0 +1,12 @@
+{% extends "taban.html" %}
+{% block baslik %}Kayıt Ol{% endblock %}
+{% block icerik %}
+<h2>Kayıt Ol</h2>
+<form method="post">
+  <label>Ad Soyad <input name="ad" required></label>
+  <label>E-posta <input name="eposta" type="email" required></label>
+  <label>Parola (en az 6 karakter) <input name="parola" type="password" minlength="6" required></label>
+  <button type="submit">Kayıt Ol</button>
+</form>
+<p>Hesabın var mı? <a href="{{ url_for('giris') }}">Giriş yap</a></p>
+{% endblock %}

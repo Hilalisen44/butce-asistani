@@ -1,0 +1,7 @@
+{% extends "taban.html" %}
+{% block baslik %}Panel{% endblock %}
+{% block icerik %}
+<h2>Hoş geldin, {{ session.get('ad') }}! 👋</h2>
+<p>Rolün: <strong>{{ session.get('rol') }}</strong></p>
+<p>Bu sayfayı sadece giriş yapmış kullanıcılar görebilir.</p>
+{% endblock %}
