@@ -1,0 +1,64 @@
+{% extends "taban.html" %}
+{% block baslik %}İşlemler{% endblock %}
+{% block icerik %}
+<h2>Gelir / Gider Kayıtları</h2>
+
+<div class="ozet">
+  <div class="kutu">Toplam Gelir<br><strong>{{ "%.2f"|format(ozet.gelir) }} TL</strong></div>
+  <div class="kutu">Toplam Gider<br><strong>{{ "%.2f"|format(ozet.gider) }} TL</strong></div>
+  <div class="kutu">Bakiye<br><strong>{{ "%.2f"|format(ozet.bakiye) }} TL</strong></div>
+</div>
+
+<h3>➕ Yeni İşlem</h3>
+<form method="post" class="satir-form">
+  <label>Kategori
+    <select name="kategori_id" required>
+      <option value="">Seçin</option>
+      {% for k in kategoriler %}
+        <option value="{{ k.id }}">{{ k.ad }} ({{ k.tur }})</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Tutar (TL) <input name="tutar" type="number" step="0.01" min="0.01" required></label>
+  <label>Tarih <input name="tarih" type="date" value="{{ bugun }}" max="{{ bugun }}" required></label>
+  <label>Açıklama <input name="aciklama" maxlength="200"></label>
+  <button type="submit">Ekle</button>
+</form>
+
+<h3>🔍 Filtrele</h3>
+<form method="get" class="satir-form">
+  <label>Kategori
+    <select name="kategori">
+      <option value="">Tümü</option>
+      {% for k in kategoriler %}
+        <option value="{{ k.id }}" {% if filtre.kategori == k.id|string %}selected{% endif %}>{{ k.ad }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Başlangıç <input type="date" name="baslangic" value="{{ filtre.baslangic }}"></label>
+  <label>Bitiş <input type="date" name="bitis" value="{{ filtre.bitis }}"></label>
+  <label>Açıklamada ara <input name="arama" value="{{ filtre.arama }}"></label>
+  <button type="submit">Filtrele</button>
+</form>
+<p><a href="{{ url_for('islemler') }}">Filtreyi temizle</a></p>
+
+<table>
+  <tr><th>Tarih</th><th>Kategori</th><th>Açıklama</th><th>Tutar</th><th></th></tr>
+  {% for i in islemler %}
+  <tr>
+    <td>{{ i.tarih }}</td>
+    <td>{{ i.kategori }}</td>
+    <td>{{ i.aciklama }}</td>
+    <td class="{{ i.tur }}">{% if i.tur == 'gider' %}-{% else %}+{% endif %}{{ "%.2f"|format(i.tutar) }} TL</td>
+    <td>
+      <form method="post" action="{{ url_for('islem_silme', islem_id=i.id) }}"
+            onsubmit="return confirm('Bu islem silinsin mi?')">
+        <button class="kucuk">Sil</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5">Kayıt bulunamadı.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}
