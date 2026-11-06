@@ -49,8 +49,8 @@ erDiagram
 
 ```mermaid
 flowchart TD
-    A[Kullanıcı - Tarayıcı] --> B[Sunum Katmanı - sunum/]
-    B --> C[İş Katmanı - is_katmani/]
-    C --> D[Veri Katmanı - veri/]
-    D --> E[(SQLite Veritabanı)]
+  A["Kullanıcı - Tarayıcı"] --> B["Sunum Katmanı - sunum/"]
+  B --> C["İş Katmanı - is_katmani/"]
+  C --> D["Veri Katmanı - veri/"]
+  D --> E[("SQLite Veritabanı")]
 ```
