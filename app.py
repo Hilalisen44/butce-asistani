@@ -12,6 +12,7 @@ from is_katmani.islem_kurallari import islem_kaydet, islem_kaldir, bakiye_ozeti,
 from is_katmani.butce_kurallari import hedef_belirle, hedef_durumlari, kategori_uyarisi, hedef_kaldir, bu_ay, ButceHatasi
 from veri import islem_veri, kategori_veri
 from datetime import date
+from is_katmani.doviz_servisi import guncel_kurlar, tl_cevir
 app = Flask(__name__, template_folder="sunum/sablonlar")
 
 # Oturum çerezini imzalamak için gizli anahtar.
@@ -173,5 +174,19 @@ def hedef_silme(hedef_id):
         flash(str(hata), "hata")
     return redirect(url_for("butce"))
 
+
+
+# ---------------- Döviz Kurları (Hafta 9) ----------------
+@app.route("/doviz")
+@giris_gerekli
+def doviz():
+    sonuc = guncel_kurlar()
+    bakiye = bakiye_ozeti(session["kullanici_id"])["bakiye"]
+    return render_template(
+        "doviz.html",
+        sonuc=sonuc,
+        bakiye=bakiye,
+        karsilik=tl_cevir(bakiye, sonuc["kurlar"]),
+    )
 if __name__ == "__main__":
     app.run(debug=True)

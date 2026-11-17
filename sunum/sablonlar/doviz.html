@@ -1,0 +1,27 @@
+{% extends "taban.html" %}
+{% block baslik %}Döviz Kurları{% endblock %}
+{% block icerik %}
+<h2>💱 Döviz Kurları</h2>
+
+{% if sonuc.uyari %}
+  <div class="mesaj hata">⚠️ {{ sonuc.uyari }}</div>
+{% endif %}
+
+{% if sonuc.kurlar %}
+<div class="ozet">
+  {% for birim, kur in sonuc.kurlar.items() %}
+  <div class="kutu">1 {{ birim }}<br><strong>{{ "%.2f"|format(kur) }} TL</strong></div>
+  {% endfor %}
+</div>
+<p style="color:#666">Son güncelleme: {{ sonuc.guncellenme }} · Kaynak: open.er-api.com</p>
+
+<h3>Bakiyenin döviz karşılığı</h3>
+<table>
+  <tr><th>Para birimi</th><th>Bakiye</th></tr>
+  <tr><td>TL</td><td><strong>{{ "%.2f"|format(bakiye) }} TL</strong></td></tr>
+  {% for birim, tutar in karsilik.items() %}
+  <tr><td>{{ birim }}</td><td>{{ "%.2f"|format(tutar) }} {{ birim }}</td></tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

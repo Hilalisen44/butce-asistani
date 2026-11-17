@@ -40,3 +40,10 @@ CREATE TABLE IF NOT EXISTS butce_hedefi (
 -- İndeksler: sık aranan sütunlarda aramayı hızlandırır
 CREATE INDEX IF NOT EXISTS idx_islem_kullanici_tarih ON islem(kullanici_id, tarih);
 CREATE INDEX IF NOT EXISTS idx_islem_kategori ON islem(kategori_id);
+
+-- Hafta 9: Döviz kurları (API'den çekilip saklanır)
+CREATE TABLE IF NOT EXISTS doviz_kuru (
+    para_birimi  TEXT PRIMARY KEY,           -- USD, EUR, GBP
+    kur          REAL NOT NULL CHECK (kur > 0),  -- 1 birim kaç TL
+    guncellenme  TEXT NOT NULL               -- en son ne zaman çekildi
+);
