@@ -2,5 +2,43 @@
 {% block baslik %}Yönetici Paneli{% endblock %}
 {% block icerik %}
 <h2>👑 Yönetici Paneli</h2>
-<p>Bu sayfayı sadece <strong>yönetici</strong> rolündeki kullanıcılar görebilir.</p>
+
+<div class="ozet">
+  <div class="kutu">Kullanıcı<br><strong>{{ y.sayilar.kullanici }}</strong></div>
+  <div class="kutu">İşlem<br><strong>{{ y.sayilar.islem }}</strong></div>
+  <div class="kutu">Kategori<br><strong>{{ y.sayilar.kategori }}</strong></div>
+  <div class="kutu">Bütçe hedefi<br><strong>{{ y.sayilar.hedef }}</strong></div>
+</div>
+
+<h3>👥 Kullanıcılar</h3>
+<table>
+  <tr><th>#</th><th>Ad</th><th>E-posta</th><th>Rol</th><th>İşlem</th><th>Toplam gider</th></tr>
+  {% for u in y.kullanicilar %}
+  <tr>
+    <td>{{ u.id }}</td><td>{{ u.ad }}</td><td>{{ u.eposta }}</td><td>{{ u.rol }}</td>
+    <td>{{ u.islem_sayisi }}</td><td>{{ "%.2f"|format(u.toplam_gider) }} TL</td>
+  </tr>
+  {% endfor %}
+</table>
+<p style="color:#666;font-size:13px">🔒 Parolalar güvenlik nedeniyle bu listede gösterilmez.</p>
+
+<h3>🏷️ Kategoriler</h3>
+<table>
+  <tr><th>Kategori</th><th>Tür</th><th>İçindeki işlem</th></tr>
+  {% for k in y.kategoriler %}
+  <tr><td>{{ k.ad }}</td><td class="{{ k.tur }}">{{ k.tur }}</td><td>{{ k.islem_sayisi }}</td></tr>
+  {% endfor %}
+</table>
+
+<h3>➕ Yeni Kategori Ekle</h3>
+<form method="post" class="satir-form">
+  <label>Kategori adı <input name="ad" maxlength="30" required></label>
+  <label>Tür
+    <select name="tur" required>
+      <option value="gider">gider</option>
+      <option value="gelir">gelir</option>
+    </select>
+  </label>
+  <button type="submit">Ekle</button>
+</form>
 {% endblock %}

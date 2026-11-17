@@ -13,6 +13,7 @@ from is_katmani.butce_kurallari import hedef_belirle, hedef_durumlari, kategori_
 from veri import islem_veri, kategori_veri
 from datetime import date
 from is_katmani.doviz_servisi import guncel_kurlar, tl_cevir
+from is_katmani.rapor_kurallari import panel_ozeti, yonetici_ozeti, kategori_olustur, YonetimHatasi
 app = Flask(__name__, template_folder="sunum/sablonlar")
 
 # Oturum çerezini imzalamak için gizli anahtar.
@@ -67,13 +68,22 @@ def cikis():
 @app.route("/panel")
 @giris_gerekli
 def panel():
-    return render_template("panel.html")
+    # Panel: kullanıcının özet ekranı (Hafta 5-6-7-9 modüllerini bir araya getirir)
+    return render_template("panel.html", p=panel_ozeti(session["kullanici_id"]))
 
 
-@app.route("/yonetici")
+@app.route("/yonetici", methods=["GET", "POST"])
 @yonetici_gerekli
 def yonetici():
-    return render_template("yonetici.html")
+    # Yönetici: sistem istatistikleri + yeni kategori ekleme
+    if request.method == "POST":
+        try:
+            kategori_olustur(request.form.get("ad"), request.form.get("tur"))
+            flash("Kategori eklendi.", "basari")
+        except YonetimHatasi as hata:
+            flash(str(hata), "hata")
+        return redirect(url_for("yonetici"))
+    return render_template("yonetici.html", y=yonetici_ozeti())
 
 
 @app.errorhandler(403)
@@ -188,5 +198,7 @@ def doviz():
         bakiye=bakiye,
         karsilik=tl_cevir(bakiye, sonuc["kurlar"]),
     )
+
+
 if __name__ == "__main__":
     app.run(debug=True)

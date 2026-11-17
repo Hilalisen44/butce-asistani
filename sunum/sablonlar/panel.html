@@ -2,6 +2,48 @@
 {% block baslik %}Panel{% endblock %}
 {% block icerik %}
 <h2>Hoş geldin, {{ session.get('ad') }}! 👋</h2>
-<p>Rolün: <strong>{{ session.get('rol') }}</strong></p>
-<p>Bu sayfayı sadece giriş yapmış kullanıcılar görebilir.</p>
+
+<div class="ozet">
+  <div class="kutu">Toplam Gelir<br><strong>{{ "%.2f"|format(p.ozet.gelir) }} TL</strong></div>
+  <div class="kutu">Toplam Gider<br><strong>{{ "%.2f"|format(p.ozet.gider) }} TL</strong></div>
+  <div class="kutu">Bakiye<br><strong>{{ "%.2f"|format(p.ozet.bakiye) }} TL</strong></div>
+</div>
+
+<h3>🔔 Bu ayın bütçe durumu ({{ p.ay }})</h3>
+{% for d in p.asilan %}
+  <div class="mesaj hata">🔴 <strong>{{ d.kategori }}</strong> bütçeni aştın: {{ "%.2f"|format(d.harcanan) }} / {{ "%.2f"|format(d.limit) }} TL</div>
+{% endfor %}
+{% for d in p.yaklasan %}
+  <div class="mesaj" style="background:#fff6dc;color:#8a6100">🟡 <strong>{{ d.kategori }}</strong> bütçenin %{{ d.yuzde }}'ini kullandın.</div>
+{% endfor %}
+{% if not p.asilan and not p.yaklasan %}
+  <div class="mesaj basari">🟢 Tüm bütçe hedeflerin yolunda.</div>
+{% endif %}
+
+<h3>📊 Bu ay kategorilere göre harcama</h3>
+{% for h in p.harcamalar %}
+  <div style="display:flex;align-items:center;gap:10px;margin:6px 0">
+    <div style="width:90px">{{ h.kategori }}</div>
+    <div style="flex:1;background:#eee;border-radius:6px;height:14px;overflow:hidden">
+      <div style="width:{{ h.yuzde }}%;height:100%;background:#2d6cdf"></div>
+    </div>
+    <div style="width:110px;text-align:right">{{ "%.2f"|format(h.toplam) }} TL</div>
+  </div>
+{% else %}
+  <p>Bu ay henüz harcama yok.</p>
+{% endfor %}
+
+<h3>🕒 Son işlemler</h3>
+<table>
+  <tr><th>Tarih</th><th>Kategori</th><th>Açıklama</th><th>Tutar</th></tr>
+  {% for i in p.son_islemler %}
+  <tr>
+    <td>{{ i.tarih }}</td><td>{{ i.kategori }}</td><td>{{ i.aciklama }}</td>
+    <td class="{{ i.tur }}">{% if i.tur == 'gider' %}-{% else %}+{% endif %}{{ "%.2f"|format(i.tutar) }} TL</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="4">Henüz işlem yok.</td></tr>
+  {% endfor %}
+</table>
+<p><a href="{{ url_for('islemler') }}">Tüm işlemler →</a> · <a href="{{ url_for('butce') }}">Bütçe hedefleri →</a> · <a href="{{ url_for('doviz') }}">Döviz →</a></p>
 {% endblock %}
